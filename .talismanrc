@@ -7,6 +7,8 @@ fileignoreconfig:
   checksum: 3271fab6b29cc063be3be556cf9b9f9e7baf2d04eb6875ea50151cf989d8ed98
 - filename: ansible/vars/vars_app_cert.yml
   checksum: 0440d00630839cde94de941fcfe2e43739f95d5ba4a233b529dcc3c445941655
+- filename: autotfansible.sh
+  checksum: 7f7c17a8e51434e249e26d7bef8bc5834ceb481b389144ff694bcc5bd973b625
 - filename: terraform/aks_cluster.tf
   checksum: e8d50c14bc29268aa2268c71a8cd3e414b1832f3efaf9cb6d3ac552b8bc3da40
 - filename: terraform/virtual_machine.tf
