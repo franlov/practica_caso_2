@@ -1,0 +1,39 @@
+ansible_python_interpreter: "/usr/bin/python3"
+k8s_namespace: casopractico2
+k8s_deployment_name: apache-casopractico2
+k8s_app: apache
+k8s_label: webserver
+k8s_internal_name: apache-internal-service
+working_directory: "/tmp"
+application:
+  definition: "stateless.yaml"
+  apache:
+    image: franazcontreg.azurecr.io/httpd:casopractico2
+    replicas: 1
+    recurses:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    port: 80
+    volume_mount:
+      name: apache-persistent-storage
+      path: /var/log/apache
+
+service_data:
+  ports: 
+    nombre: http 
+    port: 80
+    target_port: 80
+    protocol: TCP
+
+data_volume: 
+  name: casopractico2-managed-disk
+  storage_class_name: managed-premium
+  storage_size: 1Gi
+
+configmap_data:
+  name: apache-index-casopractico2
+  path: /usr/local/apache2/htdocs/
+  

@@ -1,0 +1,40 @@
+---
+- name: Ansible  with AKS - Apache image from "{{ url_reg  }}" with persistentVolumeClaim
+  hosts: localhost
+  connection: local   
+  become: false
+  gather_facts: false
+   
+  vars_files:
+    - vars/vars_aks.yml
+    - vars/vars_acr.yml
+    
+  vars:
+   
+    ansible_python_interpreter: "{{ ansible_python_interpreter }}"
+ 
+  tasks:
+
+    - name: Install pre-requisites for kubernetes.core.k8s
+      pip:
+        name:
+          - pyyaml
+          - kubernetes 
+    
+    - name: Set template file
+      template:
+        src: templates/stateless.j2
+        dest: "{{ working_directory }}/{{ application.definition }}"
+
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        name: "{{ k8s_namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Create a Deployment by reading the definition from a local file
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ k8s_namespace }}"
+        template: "{{ working_directory }}/{{ application.definition }}"

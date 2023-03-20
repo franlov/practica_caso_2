@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ k8s_deployment_name }}"
+  namespace: "{{ k8s_namespace }}"
+  labels:
+    app: "{{ k8s_label }}"
+    name: "{{ k8s_label }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ k8s_app }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ k8s_app }}"
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: "{{ k8s_app }}"
+          image: "{{ application.apache.image }}"
+          resources:
+            requests:
+              cpu: "{{ application.apache.recurses.cpu }}"
+              memory: "{{ application.apache.recurses.memory }}"
+            limits:
+              cpu: "{{ application.apache.limits.cpu }}"
+              memory: "{{ application.apache.limits.memory }}"
+          ports:
+            - containerPort: {{ application.apache.port }}
+          volumeMounts:
+            - name: "{{ application.apache.volume_mount.name }}"
+              mountPath: "{{ application.apache.volume_mount.path }}"
+            - name: "{{ configmap_data.name }}"
+              mountPath: "{{ configmap_data.path }}"
+              readOnly: true
+      volumes:
+        - name: "{{application.apache.volume_mount.name }}"
+          persistentVolumeClaim:
+            claimName: "{{ data_volume.name }}"    
+        - name: "{{ configmap_data.name }}"
+          configMap:
+            name: "{{ configmap_data.name }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ k8s_internal_name }}"
+  namespace: "{{ k8s_namespace }}"
+spec:
+  type: LoadBalancer
+  selector:
+    app: "{{ k8s_app }}"
+  ports:
+    - protocol: {{ service_data.ports.protocol }}
+      port: {{ service_data.ports.port }}
+      targetPort: {{ service_data.ports.target_port }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ data_volume.name }}"    
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: "{{ data_volume.storage_class_name }}"  
+  resources:
+    requests:
+      storage: "{{ data_volume.storage_size }}"  
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ configmap_data.name }}"
+  namespace: "{{ k8s_namespace }}"
+data:
+  index.html: |-
+    <pre style="text-align:center">
+    <img src="https://devopspain.com/images/franlogo.png" alt="">
+    <p style="text-align:center"><span style="color:#c0392b"><strong><img alt="" src="https://ralfneubauer.info/wp-content/uploads/2021/01/DEVOPS-KAIZEN.gif" /></strong></span></p>
+    <p style="text-align:center"><span style="font-family:Trebuchet MS,Helvetica,sans-serif"><span style="color:#c0392b"><strong>UNIR - EXPERT DEVOPS &amp; CLOUD</strong></span></span></p>   
+    </div></span>
+    "Kai Zen" is a Japanese expression that can be translated into English as "constant change for the better". 
+    This expression is commonly associated with the concept of continuous improvement in business, industry, 
+    and life in general. The term originates from the Japanese management philosophy known as Kaizen, 
+    which focuses on the continuous improvement of processes and efficiency. 

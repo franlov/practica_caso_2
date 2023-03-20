@@ -1,0 +1,159 @@
+---
+- name: Ansible with podman - nginx container managed with systemd
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars/vars_acr.yml
+    - vars/vars_app_cert.yml
+   
+  tasks: 
+
+    - name: Installing podman in VM
+      ansible.builtin.yum:
+        name: podman
+        state: latest
+
+    - name: Creating a workspace directory
+      ansible.builtin.file:
+        path: "{{ container_vars.dir_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy content of directory 'src'
+      copy:
+        src: "{{ container_vars.src }}"     
+        dest: "{{ container_vars.dest }}"
+
+    - name: Copy file 'index.html'
+      copy:
+        src: "{{ container_vars.index }}" 
+        dest: "{{ container_vars.index_dest }}"
+
+    - name: Install passlib python package requirements
+      ansible.builtin.pip:
+        name: passlib
+        executable: pip3
+
+    - name: Install apache2 utils
+      ansible.builtin.yum:
+         name: httpd-tools
+         state: latest
+ 
+    - name: Creating file ''.htpasswd'
+      community.general.htpasswd:
+        path: "{{ container_vars.passwd_file }}"
+        name: "{{ container_vars.user_nginx }}"
+        password: "{{ container_vars.passwd_nginx }}"
+        crypt_scheme: md5_crypt            
+
+    - name: Copy file 'nginx.conf'
+      copy:
+        src: "{{ container_vars.nginx_conf }}"
+        dest: "{{ container_vars.nginx_conf_dest }}"
+    
+    - name: Copy file 'Containerfile'
+      copy:
+        src: "{{ container_vars.container_file_src }}"    
+        dest: "{{ container_vars.container_file_dest }}"
+
+    - name: Generating a private key
+      community.crypto.openssl_privatekey:
+        path: "{{ cert_vars.private_key_path }}"  
+        backup: yes
+        
+    - name: Generating a CSR certificate
+      community.crypto.openssl_csr:
+        common_name: "{{ cert_vars.common_name }}"
+        country_name: "{{ cert_vars.country_name }}"
+        locality_name: "{{ cert_vars.locality_name }}"
+        state_or_province_name: "{{ cert_vars.state_or_province_name }}"
+        email_address: "{{ cert_vars.email_address }}"
+        organization_name: "{{ cert_vars.organization_name }}"
+        privatekey_path: "{{ cert_vars.private_key_path }}"
+        path: "{{ cert_vars.csr_path }}"
+        backup: yes
+      
+    - name: Generating a x509 certificate
+      community.crypto.x509_certificate:
+        path: "{{ cert_vars.certificate_path }}"
+        privatekey_path: "{{ cert_vars.private_key_path }}"
+        csr_path: "{{ cert_vars.csr_path }}"
+        provider: selfsigned
+
+    - name: Connect to az "{{ url_reg}}" registry
+      containers.podman.podman_login:
+        username: "{{ user_reg }}"
+        password: "{{ password_reg }}"
+        registry: "{{ url_reg }}"
+
+    - name: Build an oci formatted image
+      containers.podman.podman_image:
+        name: "{{ app_vars.name_oci }}"
+        tag: "{{ app_vars.tag_oci }}"
+        path: "{{ app_vars.path_oci }}"
+        state: build
+
+    - name: Build and push a nginx image 
+      containers.podman.podman_image:
+        name: "{{ app_vars.name_oci }}:{{ app_vars.tag_oci }}"
+        push: yes
+        push_args:
+          dest: "{{ url_reg }}"     
+
+    - name: Pull a nginx image from "{{ url_reg  }}"
+      containers.podman.podman_image:
+        name: "{{ url_reg }}/{{ app_vars.name_oci }}:{{app_vars.tag_oci}}"
+
+     # Create container with Podman module
+    - name: Create container for casopractico2
+      containers.podman.podman_container:
+        name: "{{ app_vars.name_web }}"
+        image: "{{ url_reg }}/{{ app_vars.name_oci }}:{{ app_vars.tag_oci }}"
+        state: started
+        systemd: true
+        expose:
+          - "{{ container_vars.port_http }}"
+          - "{{ container_vars.port_https }}"
+        published_ports:
+          - "{{ container_vars.port_http }}:{{ container_vars.port_http }}"
+          - "{{ container_vars.port_https }}:{{ container_vars.port_https }}"  
+        restart_policy: always
+                 
+    # Generate systemd file with podman module
+    - name: Generate systemd unit file for casopractico2
+      containers.podman.podman_generate_systemd:
+        name: "{{ app_vars.name_web }}"
+        dest: "{{ app_vars.sytemd_dir }}" 
+        restart_policy: on-failure
+
+    # Reload systemd config
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    # Make sure a service is running
+    - name: Make sure casopractico2 service is running
+      ansible.builtin.systemd:
+        daemon_reexec: yes
+        force: yes
+        state: started
+        enabled: yes
+        daemon_reload: yes
+        masked: no
+        name: "container-{{ app_vars.name_web }}"
+        
+
+
+
+    
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+cert_vars:
+  private_key_path: /app/franaz_privkey.key
+  certificate_path: /app/franaz_cert.crt
+  csr_path: /app/mycert.csr
+  certs_volume: /app:/app
+  common_name: franaz 
+  country_name: ES
+  locality_name: Sevilla
+  state_or_province_name: Sevilla
+  email_address: francisco.leong@gmail.com
+  organization_name: Student lab Inc
+
+app_vars:
+  service_name: webcasopractico2
+  name_oci: webnginx 
+  apache_img: httpd
+  apache_tag: casopractico2
+  name_web: casopractico2
+  path_oci: /app
+  tag_oci: casopractico2
+  sytemd_dir: /etc/systemd/system
+
+container_vars:
+  dir_path: /app
+  user_nginx: franlov
+  passwd_nginx: franlov
+  passwd_file: /app/.htpasswd
+  src: app/rsc/ 
+  dest: /app/rsc/
+  index: app/index.html    
+  index_dest: /app/    
+  nginx_conf: app/nginx.conf    
+  nginx_conf_dest: /app/
+  container_file_src: app/Containerfile 
+  container_file_dest: /app/
+  port_http: 80
+  port_https: 443

@@ -1,4 +1,14 @@
 fileignoreconfig:
 - filename: .gitignore
   checksum: 90ce6511216873d1a087429cdc4c3187d02e713aa5bb6141cd19b835c6057bcb
+- filename: ansible/image_pod.yml
+  checksum: 4c8aa3d0acce810b6ea1b6dfe10f554ea95728757f94daabc3f137add39b8acb
+- filename: ansible/podman.yml
+  checksum: 3271fab6b29cc063be3be556cf9b9f9e7baf2d04eb6875ea50151cf989d8ed98
+- filename: ansible/vars/vars_app_cert.yml
+  checksum: 0440d00630839cde94de941fcfe2e43739f95d5ba4a233b529dcc3c445941655
+- filename: terraform/aks_cluster.tf
+  checksum: e8d50c14bc29268aa2268c71a8cd3e414b1832f3efaf9cb6d3ac552b8bc3da40
+- filename: terraform/virtual_machine.tf
+  checksum: 6255aba9a1e044f3e6925de5234ae94b9ddaf36b9da1413f09326cd6d25f7825
 version: "1.0"

@@ -1,0 +1,9 @@
+FROM nginx
+COPY ./index.html /usr/share/nginx/html/index.html
+COPY ./rsc /usr/share/nginx/html/rsc/
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./.htpasswd /etc/nginx/.htpasswd
+COPY ./franaz_privkey.key /etc/ssl/certs/franaz_privkey.key
+COPY ./franaz_cert.crt /etc/ssl/certs/franaz_cert.crt 
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;"]

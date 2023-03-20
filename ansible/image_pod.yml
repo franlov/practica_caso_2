@@ -1,0 +1,39 @@
+---
+- name: Ansible apache image to "{{ url_reg  }}"
+  hosts: all
+  become: true
+  gather_facts: false
+  
+  vars_files:
+    - vars/vars_acr.yml
+    - vars/vars_app_cert.yml 
+
+  tasks:
+
+    - name: Pull a apache image
+      containers.podman.podman_image:
+        name: "{{ app_vars.apache_img }}"
+
+    - name: Add local tag to apache image
+      containers.podman.podman_tag:
+         image: "{{ app_vars.apache_img }}"
+         target_names:
+         - "{{ app_vars.apache_img }}:{{ app_vars.apache_tag }}"
+    
+    - name: Connect to az "{{ url_reg}}" registry
+      containers.podman.podman_login:
+        username: "{{ user_reg }}"
+        password: "{{ password_reg }}"
+        registry: "{{ url_reg }}"
+
+    - name: Build and push an apache image 
+      containers.podman.podman_image:
+        name: "{{ app_vars.apache_img }}:{{ app_vars.apache_tag }}"
+        push: yes
+        push_args:
+          dest: "{{ url_reg }}"      
+   
+    - name: Pull a apache image from "{{ url_reg  }}"
+      containers.podman.podman_image:
+        name: "{{ url_reg }}/{{ app_vars.apache_img }}:{{ app_vars.apache_tag }}"
+
