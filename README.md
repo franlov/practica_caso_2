@@ -2,7 +2,7 @@
 Caso practico 2 - Francisco León   
 ---
 
-automatescript.sh
+[automatescript.sh](https://www.youtube.com/watch?v=nl2rnXnXA-o)
 
 **DevOps Automation Script - Terraform with Ansible Integration
 Build infraestructure on Azure Cloud**
