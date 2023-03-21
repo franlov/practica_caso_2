@@ -61,7 +61,7 @@ echo ""
 /usr/bin/python3 -m pip install --user ansible
 echo "** Updating Installed Ansible"
 /usr/bin/python3 -m pip install --upgrade --user ansible
-# Added ansible bin to PATH
+# Add ansible bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
 echo ""
 echo "** Installing kubectl cli"
