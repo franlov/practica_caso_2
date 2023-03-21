@@ -102,7 +102,7 @@ sleep 5
 ./autotfansible.sh
 exit;
 elif [ "$type" == "plan" ];then
-sshpubkey="~/.ssh/id_rsa.pub"
+sshpubkey="$HOME/.ssh/id_rsa.pub"
 if [ -f "$sshpubkey" ]; then
     echo ""
 else
@@ -146,7 +146,7 @@ echo "------------------------------"
 echo "- Starting terraform process -"
 echo "------------------------------"
 echo ""
-sshpubkey="~/.ssh/id_rsa.pub"
+sshpubkey="$HOME/.ssh/id_rsa.pub"
 if [ -f "$sshpubkey" ]; then
     echo ""
 else
