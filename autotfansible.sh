@@ -54,7 +54,7 @@ baseurl=https://packages.microsoft.com/yumrepos/azure-cli
 enabled=1
 gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo
-sudo dnf install azure-cli
+sudo dnf install azure-cli wget
 fi
 echo ""
 echo "** Installing Terraform"
@@ -66,8 +66,19 @@ sudo apt update
 sudo apt install terraform
 else
 sudo yum install -y yum-utils curl jq sed python3-pip wget
+sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 sudo yum -y install terraform
+if [ $? -eq 0 ]; then
+    echo ""
+else
+echo ""
+echo "** Triying other method"
+echo ""
+sudo dnf install -y dnf-plugins-core
+sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+sudo dnf -y install terraform
+fi
 fi
 echo ""
 echo "** Installing Ansible"
