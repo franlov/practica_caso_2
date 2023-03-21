@@ -40,9 +40,22 @@ echo ""
 if [ "$type" == "install" ];then
 echo "** Installing AZ CLI"
 echo ""
+if [  -n "$(uname -a | grep Ubuntu)" ]; then
 sudo apt-get update
 sudo apt-get install libcurl4 curl jq sed python3-pip wget
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+else
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo dnf install -y https://packages.microsoft.com/config/rhel/9.0/packages-microsoft-prod.rpm
+sudo dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
+echo -e "[azure-cli]
+name=Azure CLI
+baseurl=https://packages.microsoft.com/yumrepos/azure-cli
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo
+sudo dnf install azure-cli
+fi
 echo ""
 echo "** Installing Terraform"
 echo ""
@@ -52,7 +65,7 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://
 sudo apt update
 sudo apt install terraform
 else
-sudo yum install -y yum-utils curl jq sed python3-pip
+sudo yum install -y yum-utils curl jq sed python3-pip wget
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 sudo yum -y install terraform
 fi
