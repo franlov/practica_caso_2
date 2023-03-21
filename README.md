@@ -1,5 +1,5 @@
 
-Caso practico 2 - Francisco León   
+Caso Práctico 2 - Francisco León   
 ---
 
 [automatescript.sh](https://www.youtube.com/watch?v=nl2rnXnXA-o) <- [Uso Video](https://www.youtube.com/watch?v=nl2rnXnXA-o)
