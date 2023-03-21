@@ -13,6 +13,7 @@ echo "#  For: Expert DevOps & Cloud    #"
 echo "----------------------------------"
 
 folder="$PWD/terraform"
+export PATH="$HOME/.local/bin:$PATH"
 
 echo ""
 echo "** If you want to install Azure CLI, Terraform, Ansible and kubectl." 
@@ -62,7 +63,6 @@ echo ""
 echo "** Updating Installed Ansible"
 /usr/bin/python3 -m pip install --upgrade --user ansible
 # Add ansible bin to PATH
-export PATH="$HOME/.local/bin:$PATH"
 echo ""
 echo "** Installing kubectl cli"
 echo ""
