@@ -146,6 +146,7 @@ echo "------------------------------"
 echo "- Starting terraform process -"
 echo "------------------------------"
 echo ""
+sshpubkey="~/.ssh/id_rsa.pub"
 if [ -f "$sshpubkey" ]; then
     echo ""
 else

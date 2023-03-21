@@ -1,4 +1,4 @@
 fileignoreconfig:
 - filename: autotfansible.sh
-  checksum: 1d6adb7bbccca9888fa9e5c582f3a3cdc15e0b6dc411a20c92cfda43539dc2a4
+  checksum: 2c84a6809e4857babebf125991c37edd00e648ee61f2f2abae00f06a2c3592a4
 version: "1.0"
