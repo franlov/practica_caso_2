@@ -166,10 +166,6 @@ fi
 echo ""
 echo "*** Validating files with TF code"
 echo ""
-terraform -chdir="$folder" validate
-
-echo "** Planning the infraestructure with terraform"
-echo ""
 sshpubkey="$HOME/.ssh/id_rsa.pub"
 if [ -f "$sshpubkey" ]; then
     echo ""
@@ -181,6 +177,10 @@ echo ""
 ssh-keygen -t rsa
 echo ""
 fi
+terraform -chdir="$folder" validate
+
+echo "** Planning the infraestructure with terraform"
+echo ""
 terraform -chdir="$folder" plan
 
 echo ""
