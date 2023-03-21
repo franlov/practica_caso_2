@@ -102,6 +102,17 @@ sleep 5
 ./autotfansible.sh
 exit;
 elif [ "$type" == "plan" ];then
+sshpubkey="~/.ssh/id_rsa.pub"
+if [ -f "$sshpubkey" ]; then
+    echo ""
+else
+    echo "** SSH Publickey does not exist, please create a new keypair to connect with SSH"
+echo ""
+echo "Please do not change the default name (id_rsa)"
+echo ""
+ssh-keygen -t rsa
+echo ""
+fi
 echo "Showing a terraform plan"
 echo ""
 if [ -d "$folder/.terraform/" ]; then
@@ -135,6 +146,16 @@ echo "------------------------------"
 echo "- Starting terraform process -"
 echo "------------------------------"
 echo ""
+if [ -f "$sshpubkey" ]; then
+    echo ""
+else
+    echo "** SSH Publickey does not exist, please create a new keypair to connect with SSH"
+echo ""
+echo "Please do not change the default name (id_rsa)"
+echo ""
+ssh-keygen -t rsa
+echo ""
+fi
 echo "** Validating terraform files with TF format"
 terraform -chdir="$folder" fmt
 if [ $? -eq 0 ]; then
