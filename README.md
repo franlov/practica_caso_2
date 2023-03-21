@@ -7,11 +7,11 @@ Caso practico 2 - Francisco León
 **DevOps Automation Script - Terraform with Ansible Integration
 Build infraestructure on Azure Cloud**
 
-**By Francisco León - [www.devopspain.com](www.devopspain.com)**
+**By Francisco León - [www.devopspain.com](https://www.devopspain.com)**
 
 
 **For: Unir Expert DevOps and Cloud**
 
 
-This work is licensed under a [Creative Commons License](http://creativecommons.org)
+This work is licensed under a [Creative Commons License Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
